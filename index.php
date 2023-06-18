@@ -54,9 +54,6 @@ require('controller/conn.php')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- custom css -->
-    <link rel="stylesheet" href="/assets/tinymce/skins/lightgray/skin.min.css">
-    <!-- <script src="/assets/tinymce/tinymce.min.js"></script> -->
-    <script src="https://fafabae55.icg888.co/content/js/tinymce/tinymce.min.js"></script>
 
 
 </head>

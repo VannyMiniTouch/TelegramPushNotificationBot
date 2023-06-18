@@ -8,7 +8,7 @@
         text-align: center;
     }
 
-    .CreateAndSend_allUsers {
+    .SendAllUsers {
         text-align: right;
     }
 
@@ -42,8 +42,18 @@
         align-items: center;
     }
 
+    #CloseModal {
+        background: none;
+        border: none;
+        font-size: large
+    }
+
     .preImg {
         display: none;
+    }
+
+    .preImg img {
+        width: 100%;
     }
 </style>
 
@@ -60,10 +70,13 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th width="20%" scope="col">#</th>
-                            <th width="60%" scope="col">ID</th>
-                            <th width="20%" scope="col">
-                                <button class="btn btn-sm btn-primary CreateAndSend_allUsers" type="button" title="Create Notification then send all users">Send All</button>
+                            <th scope="col">#</th>
+                            <th scope="col">Tele-ID</th>
+                            <th scope="col">User Name</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">
+                                <button id="SendAllUsers" class="btn btn-sm btn-primary SendAllUsers" type="button" title="Create Notification then send all users">Send All</button>
                             </th>
                         </tr>
                     </thead>
@@ -97,9 +110,12 @@
                         ?>
                             <tr id="<?php echo $key ?>">
                                 <th scope="row"><?php echo ($offset + $key + 1) ?></th>
-                                <td id="<?php echo $val['user_id'] ?>"><?php echo $val['user_id'] ?></td>
+                                <td id="<?php echo $val['tid'] ?>"><?php echo $val['tid'] ?></td>
+                                <td id="<?php echo $val['username'] ?>"><?php echo $val['username'] ?></td>
+                                <td id="<?php echo $val['firstname'] ?>"><?php echo $val['firstname'] ?></td>
+                                <td id="<?php echo $val['lastname'] ?>"><?php echo $val['lastname'] ?></td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary selectThisUser" userid="<?php echo $val['user_id'] ?>" type="button">Send</button>
+                                    <button class="btn btn-sm btn-primary selectThisUser" userid="<?php echo $val['tid'] ?>" type="button">Send</button>
                                 </td>
                             </tr>
                         <?php
@@ -190,21 +206,33 @@
 </div>
 <script>
     $(function() {
+        // var URL = "https://api.telegram.org/bot5786700742:AAFOFU8nL8PxXmHp4lNC2z89nm2ugIKdJmI/sendPhoto?chat_id=489399945&photo=https://s3-ap-northeast-1.amazonaws.com/hcgames/content/khmergaming/images/home/sub-nav/casino/tga.png&caption=This%20is%20a%20caption"
+        // var URL = "chat_id=489399945&photo=https://s3-ap-northeast-1.amazonaws.com/hcgames/content/khmergaming/images/home/sub-nav/casino/tga.png&caption=This%20is%20a%20caption"
+
+        const BOT_Token = "5786700742:AAFOFU8nL8PxXmHp4lNC2z89nm2ugIKdJmI";
+
+
         // https://s3-ap-northeast-1.amazonaws.com/hcgames.3g/content/images/kg/user/list/2.jpg
-        //close Modal 
+
+        //reset form then close modal
         $('#CloseModal').click(function() {
+            $("#FormCreateMessage")[0].reset();
+            $("#showImg").attr('src', "")
+                .closest("div")
+                .removeAttr("style")
             $('#Modal_Create_Message').modal('hide');
         })
+
+        //reset form but not close modal
         $("#resetForm").click(function() {
             $("#showImg").attr('src', "")
                 .closest("div")
                 .removeAttr("style")
         })
-
-        //send this user
+ 
+        //send this user => open modal and add attribute to button tage
         $(document).on('click', '.selectThisUser', function() {
             const thisUser = $(this).attr('userid');
-            console.log(thisUser, "top")
             $('#Modal_Create_Message').modal('show')
             $('#SendToUser').attr({
                 'user-type': 'thisUser',
@@ -212,6 +240,16 @@
             })
         })
 
+        //send all users => open modal and add attribute to button tage
+        $("#SendAllUsers").click(function() {
+            $('#Modal_Create_Message').modal('show')
+            $('#SendToUser').attr({
+                'user-type': 'AllUsers',
+                'user-id': true
+            })
+        })
+
+        //on leave focus append url to Image src
         $("#sourceImg").blur(function() {
             console.log($(this).val())
             if (!$(this).val) {
@@ -226,25 +264,44 @@
             }
         });
 
-        //send this user
+        //Function Switch Send Specific User / All Users
         $('#SendToUser').click(function() {
             const userID = $(this).attr('user-id');
             const Img = $('#sourceImg').val();
             const Smg = $('#MessageDesc').val();
+            const Usertype = $(this).attr('user-type')
 
-            axios.post('http://reactdeployapi/api/test', {
-                    firstName: 'Fred',
-                    lastName: 'Flintstone'
-                })
+            if (Usertype == "thisUser") {
+                SendThisUser(userID, Img, Smg)
+            } else if (Usertype == "AllUsers") {
+                console.log("Send to all users")
+            } else {
+                console.log("Usertype not found")
+            }
+
+        })
+
+        //Send This User
+        function SendThisUser(Userid, Img, Smg) {
+            console.log(Userid, Smg, Img)
+
+            console.log("call me here")
+            const BOT_Token = "5786700742:AAFOFU8nL8PxXmHp4lNC2z89nm2ugIKdJmI";
+            const Smg_EndCode = encodeURIComponent(Smg);
+            Userid = "489399945";
+            // Img="https://s3-ap-northeast-1.amazonaws.com/hcgames/content/khmergaming/images/home/sub-nav/casino/tga.png"
+            axios.get(`https://api.telegram.org/bot${BOT_Token}/sendPhoto?chat_id=${Userid}&photo=${Img}&caption=${Smg_EndCode}`)
+                // axios.get(`https://api.telegram.org/bot${BOT_Token}/sendPhoto?chat_id=489399945&photo=https://s3-ap-northeast-1.amazonaws.com/hcgames/content/khmergaming/images/home/sub-nav/casino/tga.png&caption=This%20is%20a%20caption`)
                 .then(function(response) {
-                    // console.log(response);
                     const data = response.data;
                     console.log(data)
                 })
                 .catch(function(error) {
                     console.log(error);
                 });
-        })
+        }
+
+        //Send To All Users
 
 
     })
