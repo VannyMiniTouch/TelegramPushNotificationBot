@@ -2,7 +2,6 @@
 error_reporting(0);
 session_start();
 $uriArr  = explode("/", $_SERVER['REQUEST_URI']);
-//print_r($uriArr);
 if (isset($_GET['page']) || (strlen($uriArr[1]) > 2 && $uriArr[1] != 'index.php')) {
     if (isset($_GET['page'])) {
         $pageUrl = $_GET['page'];
@@ -20,7 +19,21 @@ if ((strlen($uriArr[1]) == 2 && (in_array($uriArr[1], array('en', 'cn'))))) {
     $_SESSION['lang'] = $lang;
     $pageUrl      = $uriArr['2'];
 }
-$pagefile = "pages/index.php";
+
+switch ($pageUrl) {
+
+    case '/':
+        $pagefile = "pages/index.php";
+        break;
+    case 'create_user':
+        include "controller/save_user.php";
+        exit();
+        break;
+
+    default:
+        $pagefile = "pages/index.php";
+        break;
+}
 
 include "config/function.php";
 
@@ -54,7 +67,8 @@ require('controller/conn.php')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- custom css -->
-
+    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"> -->
+    <link rel="stylesheet" href="/contens/iziToast-master/dist/css/iziToast.min.css">
 
 </head>
 
@@ -67,6 +81,8 @@ require('controller/conn.php')
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script> -->
+<script src="/contens/iziToast-master/dist/js/iziToast.min.js"></script>
 
 </html>
 

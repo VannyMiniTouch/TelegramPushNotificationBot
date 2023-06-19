@@ -63,7 +63,6 @@
             <div class="welcome">
                 <h3>Welcome To BOT ADMIN</h3>
             </div>
-
         </div>
         <div class="container-body">
             <div class="tableList-Users-container">
@@ -87,25 +86,20 @@
                         $row = mysqli_fetch_row($result);
                         $total_records = $row[0];
                         $total_pages = ceil($total_records / 10);
-
                         if (isset($_GET['page']) && is_numeric($_GET['page'])) {
                             $current_page = (int) $_GET['page'];
                         } else {
                             $current_page = 1;
                         }
-
                         if ($current_page > $total_pages) {
                             $current_page = $total_pages;
                         } elseif ($current_page < 1) {
                             $current_page = 1;
                         }
-
                         $offset = ($current_page - 1) * 10;
-
                         $sql = "SELECT * FROM `mod_telegram_member` ORDER BY `id` DESC LIMIT 10 OFFSET {$offset}";
                         $result = mysqli_query($con, $sql);
                         $assoc = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
                         foreach ($assoc as $key => $val) {
                         ?>
                             <tr id="<?php echo $key ?>">
@@ -206,13 +200,40 @@
 </div>
 <script>
     $(function() {
-        // var URL = "https://api.telegram.org/bot5786700742:AAFOFU8nL8PxXmHp4lNC2z89nm2ugIKdJmI/sendPhoto?chat_id=489399945&photo=https://s3-ap-northeast-1.amazonaws.com/hcgames/content/khmergaming/images/home/sub-nav/casino/tga.png&caption=This%20is%20a%20caption"
-        // var URL = "chat_id=489399945&photo=https://s3-ap-northeast-1.amazonaws.com/hcgames/content/khmergaming/images/home/sub-nav/casino/tga.png&caption=This%20is%20a%20caption"
 
+        // ============== Bot Token ============
         const BOT_Token = "5786700742:AAFOFU8nL8PxXmHp4lNC2z89nm2ugIKdJmI";
+        var IsImage = false;
 
+        // iziToast.settings({
+        //     timeout: 10000,
+        //     resetOnHover: true,
+        //     icon: 'material-icons',
+        //     transitionIn: 'flipInX',
+        //     transitionOut: 'flipOutX',
+        //     onOpening: function() {
+        //         console.log('callback abriu!');
+        //     },
+        //     onClosing: function() {
+        //         console.log("callback fechou!");
+        //     }
+        // });
 
-        // https://s3-ap-northeast-1.amazonaws.com/hcgames.3g/content/images/kg/user/list/2.jpg
+        function iziToastSuccess(title = "Success", smg) {
+            iziToast.success({
+                title: title,
+                message: smg,
+                position: 'topRight'
+            });
+        }
+
+        function iziToastError(title = "Error", smg = "Somethings went wrong") {
+            iziToast.error({
+                title: title,
+                message: smg,
+                position: 'topRight'
+            });
+        }
 
         //reset form then close modal
         $('#CloseModal').click(function() {
@@ -229,7 +250,7 @@
                 .closest("div")
                 .removeAttr("style")
         })
- 
+
         //send this user => open modal and add attribute to button tage
         $(document).on('click', '.selectThisUser', function() {
             const thisUser = $(this).attr('userid');
@@ -249,60 +270,153 @@
             })
         })
 
+        //checking Image have or not
+        function checkImage(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => reject(false);
+                img.src = url;
+            });
+        }
         //on leave focus append url to Image src
         $("#sourceImg").blur(function() {
-            console.log($(this).val())
-            if (!$(this).val) {
+            if ($(this).val() == "") {
                 $("#showImg").attr('src', "")
                     .closest("div")
                     .removeAttr("style")
+                IsImage = false;
             } else {
                 const ImageSource = $(this).val();
-                $("#showImg").attr('src', ImageSource)
-                    .closest("div")
-                    .css("display", "block");
+                checkImage(ImageSource)
+                    // .then( result => console.log(result))
+                    .then(function(result) {
+                        console.log("res => ", result)
+                        if (result) {
+                            $("#showImg").attr('src', ImageSource)
+                                .closest("div")
+                                .css("display", "block");
+                            IsImage = false;
+                        } else {
+                            $("#showImg").attr('src', "")
+                                .closest("div")
+                                .removeAttr("style")
+                            IsImage = true;
+                        }
+                    })
+                    .catch(function(error) {
+                        $("#showImg").attr('src', "")
+                            .closest("div")
+                            .removeAttr("style")
+                        iziToastError('Error URL', "Image Url may wrong")
+                        IsImage = true;
+                        console.log("error=>", error)
+                    });
             }
         });
 
+
+
+
+        //   const test =   checkImage('https://s3-ap-northeast-1.amazonaws.com/hcgames.3g/content/images/kg/user/list/23.jpg')
+        //   .then(function(res){
+        //     console.log("rest =>",res)
+        //   }).catch(function(error){
+        //     console.log("err ", error)
+        //   })
+        // .then(result => console.log(result))
+        // .catch(error => console.log(error));
+
+
         //Function Switch Send Specific User / All Users
         $('#SendToUser').click(function() {
+            if (IsImage) {
+                iziToastError('Error URL', "Image Url may wrong")
+                return;
+            }
             const userID = $(this).attr('user-id');
             const Img = $('#sourceImg').val();
             const Smg = $('#MessageDesc').val();
             const Usertype = $(this).attr('user-type')
-
             if (Usertype == "thisUser") {
                 SendThisUser(userID, Img, Smg)
             } else if (Usertype == "AllUsers") {
-                console.log("Send to all users")
+                SendAllUsers(Img, Smg)
             } else {
                 console.log("Usertype not found")
             }
-
         })
 
         //Send This User
         function SendThisUser(Userid, Img, Smg) {
-            console.log(Userid, Smg, Img)
-
-            console.log("call me here")
-            const BOT_Token = "5786700742:AAFOFU8nL8PxXmHp4lNC2z89nm2ugIKdJmI";
             const Smg_EndCode = encodeURIComponent(Smg);
-            Userid = "489399945";
-            // Img="https://s3-ap-northeast-1.amazonaws.com/hcgames/content/khmergaming/images/home/sub-nav/casino/tga.png"
-            axios.get(`https://api.telegram.org/bot${BOT_Token}/sendPhoto?chat_id=${Userid}&photo=${Img}&caption=${Smg_EndCode}`)
-                // axios.get(`https://api.telegram.org/bot${BOT_Token}/sendPhoto?chat_id=489399945&photo=https://s3-ap-northeast-1.amazonaws.com/hcgames/content/khmergaming/images/home/sub-nav/casino/tga.png&caption=This%20is%20a%20caption`)
+            const SEND_TEXT = `https://api.telegram.org/bot${BOT_Token}/sendMessage?chat_id=${Userid}&photo=${Img}&text=${Smg_EndCode}`;
+            const SEND_TEXT_IMAGE = `https://api.telegram.org/bot${BOT_Token}/sendPhoto?chat_id=${Userid}&photo=${Img}&caption=${Smg_EndCode}`;
+            axios.get(Img ? SEND_TEXT_IMAGE : SEND_TEXT)
                 .then(function(response) {
                     const data = response.data;
-                    console.log(data)
+                    console.log(response.data)
+                    //if success
+                    if ('ok' in data) {
+                        //call alert success here
+                        iziToastSuccess("Success", "Notification was sent")
+                        $("#FormCreateMessage")[0].reset();
+                        $("#showImg").attr('src', "")
+                            .closest("div")
+                            .removeAttr("style")
+                        $('#Modal_Create_Message').modal('hide');
+                    }
                 })
                 .catch(function(error) {
+                    //call alert error
+                    iziToastError();
                     console.log(error);
                 });
         }
-
         //Send To All Users
-
-
+        function SendAllUsers(Img, Smg) {
+            let once = true;
+            let count_status = 0;
+            axios.post("controller/get_all_users.php", {}).then(function(res) {
+                console.log("res data",res.data)
+                if (res.data) {
+                    // console.log("rest data =>",res.data)
+                    //Telegram maximume time per send is 350milisecond and maximum message is 30messages per second
+                    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+                    res.data.reduce(
+                        (promiseChain, currentTask) =>
+                        promiseChain.then(() => delay(400)).then(() => {
+                            const Userid = currentTask.tid;
+                            const Smg_EndCode = encodeURIComponent(Smg);
+                            const SEND_TEXT = `https://api.telegram.org/bot${BOT_Token}/sendMessage?chat_id=${Userid}&photo=${Img}&text=${Smg_EndCode}`;
+                            const SEND_TEXT_IMAGE = `https://api.telegram.org/bot${BOT_Token}/sendPhoto?chat_id=${Userid}&photo=${Img}&caption=${Smg_EndCode}`;
+                            axios.get(Img ? SEND_TEXT_IMAGE : SEND_TEXT)
+                                .then(function(response) {
+                                    const data = response.data;
+                                    //if success
+                                    if ('ok' in data && once) {
+                                        //call alert success here
+                                        iziToastSuccess("Success", "Notification was sent")
+                                        $("#FormCreateMessage")[0].reset();
+                                        $("#showImg").attr('src', "")
+                                            .closest("div")
+                                            .removeAttr("style")
+                                        $('#Modal_Create_Message').modal('hide');
+                                        once = false;
+                                    }
+                                })
+                                .catch(function(error) {
+                                    //call alert error
+                                    // iziToastError();
+                                    // console.log(error);
+                                });
+                        }),
+                        Promise.resolve()
+                    );
+                }
+            }).catch(function(error) {
+                console.log(error)
+            })
+        }
     })
 </script>
