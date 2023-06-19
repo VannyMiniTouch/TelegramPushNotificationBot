@@ -1,0 +1,56 @@
+.HomePage {
+  width: 100dvw;
+  height: 100dvh;
+}
+
+.container-header h3 {
+  text-align: center;
+}
+
+.SendAllUsers {
+  text-align: right;
+}
+
+.tableList-Users-container > table {
+  text-align: center;
+}
+
+.form-group {
+  width: 100%;
+}
+
+.blockUrl {
+  width: 100%;
+}
+
+.dfr-r {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.dfr-c {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+#CloseModal {
+  background: none;
+  border: none;
+  font-size: large;
+}
+
+.preImg {
+  display: none;
+}
+
+.preImg img {
+  width: 100%;
+}

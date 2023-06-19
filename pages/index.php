@@ -1,62 +1,3 @@
-<style>
-    .HomePage {
-        width: 100dvw;
-        height: 100dvh;
-    }
-
-    .container-header h3 {
-        text-align: center;
-    }
-
-    .SendAllUsers {
-        text-align: right;
-    }
-
-    .tableList-Users-container>table {
-        text-align: center;
-    }
-
-    .form-group {
-        width: 100%;
-    }
-
-    .blockUrl {
-        width: 100%;
-    }
-
-    .dfr-r {
-        display: flex;
-        flex-direction: row;
-        align-content: center;
-        justify-content: flex-end;
-        align-items: center;
-    }
-
-    .dfr-c {
-        display: flex;
-        gap: 1rem;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        align-content: center;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #CloseModal {
-        background: none;
-        border: none;
-        font-size: large
-    }
-
-    .preImg {
-        display: none;
-    }
-
-    .preImg img {
-        width: 100%;
-    }
-</style>
-
 <div class="HomePage">
     <div class="container">
         <div class="container-header mt-3">
@@ -205,20 +146,6 @@
         const BOT_Token = "5786700742:AAFOFU8nL8PxXmHp4lNC2z89nm2ugIKdJmI";
         var IsImage = false;
 
-        // iziToast.settings({
-        //     timeout: 10000,
-        //     resetOnHover: true,
-        //     icon: 'material-icons',
-        //     transitionIn: 'flipInX',
-        //     transitionOut: 'flipOutX',
-        //     onOpening: function() {
-        //         console.log('callback abriu!');
-        //     },
-        //     onClosing: function() {
-        //         console.log("callback fechou!");
-        //     }
-        // });
-
         function iziToastSuccess(title = "Success", smg) {
             iziToast.success({
                 title: title,
@@ -289,9 +216,7 @@
             } else {
                 const ImageSource = $(this).val();
                 checkImage(ImageSource)
-                    // .then( result => console.log(result))
                     .then(function(result) {
-                        console.log("res => ", result)
                         if (result) {
                             $("#showImg").attr('src', ImageSource)
                                 .closest("div")
@@ -314,19 +239,6 @@
                     });
             }
         });
-
-
-
-
-        //   const test =   checkImage('https://s3-ap-northeast-1.amazonaws.com/hcgames.3g/content/images/kg/user/list/23.jpg')
-        //   .then(function(res){
-        //     console.log("rest =>",res)
-        //   }).catch(function(error){
-        //     console.log("err ", error)
-        //   })
-        // .then(result => console.log(result))
-        // .catch(error => console.log(error));
-
 
         //Function Switch Send Specific User / All Users
         $('#SendToUser').click(function() {
@@ -355,7 +267,6 @@
             axios.get(Img ? SEND_TEXT_IMAGE : SEND_TEXT)
                 .then(function(response) {
                     const data = response.data;
-                    console.log(response.data)
                     //if success
                     if ('ok' in data) {
                         //call alert success here
@@ -377,10 +288,10 @@
         function SendAllUsers(Img, Smg) {
             let once = true;
             let count_status = 0;
+            let lengtharr = 0;
             axios.post("controller/get_all_users.php", {}).then(function(res) {
-                console.log("res data",res.data)
                 if (res.data) {
-                    // console.log("rest data =>",res.data)
+                    lengtharr = res.data.length;
                     //Telegram maximume time per send is 350milisecond and maximum message is 30messages per second
                     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
                     res.data.reduce(
@@ -394,21 +305,26 @@
                                 .then(function(response) {
                                     const data = response.data;
                                     //if success
-                                    if ('ok' in data && once) {
+                                    if ('ok' in data) {
+                                        count_status += 1;
                                         //call alert success here
-                                        iziToastSuccess("Success", "Notification was sent")
-                                        $("#FormCreateMessage")[0].reset();
-                                        $("#showImg").attr('src', "")
-                                            .closest("div")
-                                            .removeAttr("style")
-                                        $('#Modal_Create_Message').modal('hide');
-                                        once = false;
+                                        if (count_status == lengtharr) {
+                                            iziToastSuccess("Success", "Notification was sent")
+                                        }
+                                        if (once) {
+                                            $("#FormCreateMessage")[0].reset();
+                                            $("#showImg").attr('src', "")
+                                                .closest("div")
+                                                .removeAttr("style")
+                                            $('#Modal_Create_Message').modal('hide');
+                                            once = false;
+                                        }
                                     }
                                 })
                                 .catch(function(error) {
                                     //call alert error
-                                    // iziToastError();
-                                    // console.log(error);
+                                    iziToastError();
+                                    console.log(error);
                                 });
                         }),
                         Promise.resolve()
