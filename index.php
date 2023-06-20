@@ -19,21 +19,21 @@ if ((strlen($uriArr[1]) == 2 && (in_array($uriArr[1], array('en', 'cn'))))) {
     $_SESSION['lang'] = $lang;
     $pageUrl      = $uriArr['2'];
 }
-
-switch ($pageUrl) {
-
-    case '/':
-        $pagefile = "pages/index.php";
-        break;
-    case 'create_user':
-        include "controller/save_user.php";
-        exit();
-        break;
-
-    default:
-        $pagefile = "pages/index.php";
-        break;
+if (!$_SESSION['login']){
+    include('pages/login.php');
+    exit();
 }
+
+    switch ($pageUrl) {
+
+        case '/':
+            $pagefile = "pages/index.php";
+            break;
+
+        default:
+            $pagefile = "pages/index.php";
+            break;
+    }
 
 include "config/function.php";
 

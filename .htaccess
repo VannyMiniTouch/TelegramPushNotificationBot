@@ -76,14 +76,14 @@ RewriteCond %{QUERY_STRING} decode [NC]
 
 RewriteRule ^(.*)$ /index.php/ [NC,L]
 
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^save_user\.php$  controller/save_user.php [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^login_submiter\.php$  controller/login_submiter.php [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-#sub dir without
-RewriteRule ^(.*)$ index.php/$1 [L]
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^logout\.php$  logout.php [L]

@@ -1,0 +1,182 @@
+RewriteEngine On
+    
+#RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]  
+#RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]  
+#RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})  
+#RewriteRule ^(.*)$ index.php [F,L] 
+
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteRule ^(.*)$ index.php/$1 [L]
+
+RewriteRule ^.*\.save$ /index.php [R=301,L]
+
+#RewriteCond %{QUERY_STRING} !^$
+RewriteCond %{REQUEST_URI} !index.php/
+RewriteCond %{QUERY_STRING} union [NC,OR]
+RewriteCond %{QUERY_STRING} select [NC,OR]
+RewriteCond %{QUERY_STRING} cast [NC,OR]
+RewriteCond %{QUERY_STRING} declare [NC,OR]
+RewriteCond %{QUERY_STRING} drop [NC,OR]
+RewriteCond %{QUERY_STRING} md5 [NC,OR]
+RewriteCond %{QUERY_STRING} benchmark [NC,OR]
+RewriteCond %{QUERY_STRING} table [NC,OR]
+RewriteCond %{QUERY_STRING} column [NC,OR]
+RewriteCond %{QUERY_STRING} distinct [NC,OR]
+RewriteCond %{QUERY_STRING} substr [NC,OR]
+RewriteCond %{QUERY_STRING} concat [NC,OR]
+RewriteCond %{QUERY_STRING} schema [NC,OR]
+RewriteCond %{QUERY_STRING} hex [NC,OR]
+RewriteCond %{QUERY_STRING} truncate [NC,OR]
+RewriteCond %{QUERY_STRING} convert [NC,OR]
+RewriteCond %{QUERY_STRING} exec [NC,OR]
+RewriteCond %{QUERY_STRING} passthru [NC,OR]
+RewriteCond %{QUERY_STRING} system [NC,OR]
+RewriteCond %{QUERY_STRING} popen [NC,OR]
+RewriteCond %{QUERY_STRING} proc [NC,OR]
+RewriteCond %{QUERY_STRING} load [NC,OR]
+RewriteCond %{QUERY_STRING} between [NC,OR]
+RewriteCond %{QUERY_STRING} null [NC,OR]
+RewriteCond %{QUERY_STRING} delay [NC,OR]
+RewriteCond %{QUERY_STRING} char [NC,OR]
+RewriteCond %{QUERY_STRING} sleep [NC,OR]
+RewriteCond %{QUERY_STRING} schema [NC,OR]
+RewriteCond %{QUERY_STRING} unhex [NC,OR]
+RewriteCond %{QUERY_STRING} %00 [NC,OR]
+RewriteCond %{QUERY_STRING} %0A [NC,OR]
+RewriteCond %{QUERY_STRING} %0D [NC,OR]
+RewriteCond %{QUERY_STRING} %21 [NC,OR]
+RewriteCond %{QUERY_STRING} %22 [NC,OR]
+RewriteCond %{QUERY_STRING} %23 [NC,OR]
+RewriteCond %{QUERY_STRING} %24 [NC,OR]
+RewriteCond %{QUERY_STRING} %25 [NC,OR]
+RewriteCond %{QUERY_STRING} %27 [NC,OR]
+RewriteCond %{QUERY_STRING} %28 [NC,OR]
+RewriteCond %{QUERY_STRING} %29 [NC,OR]
+RewriteCond %{QUERY_STRING} %40 [NC,OR]
+RewriteCond %{QUERY_STRING} %60 [NC,OR]
+RewriteCond %{QUERY_STRING} %2A [NC,OR]
+RewriteCond %{QUERY_STRING} %2B [NC,OR]
+RewriteCond %{QUERY_STRING} %2C [NC,OR]
+RewriteCond %{QUERY_STRING} %2D [NC,OR]
+RewriteCond %{QUERY_STRING} %3B [NC,OR]
+RewriteCond %{QUERY_STRING} %3C [NC,OR]
+RewriteCond %{QUERY_STRING} %3E [NC,OR]
+RewriteCond %{QUERY_STRING} %5B [NC,OR]
+RewriteCond %{QUERY_STRING} %5C [NC,OR]
+RewriteCond %{QUERY_STRING} %5D [NC,OR]
+RewriteCond %{QUERY_STRING} %5E [NC,OR]
+RewriteCond %{QUERY_STRING} %5F [NC,OR]
+RewriteCond %{QUERY_STRING} %7B [NC,OR]
+RewriteCond %{QUERY_STRING} %7C [NC,OR]
+RewriteCond %{QUERY_STRING} %7D [NC,OR]
+RewriteCond %{QUERY_STRING} %7E [NC,OR]
+RewriteCond %{QUERY_STRING} > [NC,OR]
+RewriteCond %{QUERY_STRING} < [NC,OR]
+RewriteCond %{QUERY_STRING} sanitize [NC,OR]
+RewriteCond %{QUERY_STRING} eval [NC,OR]
+RewriteCond %{QUERY_STRING} base64 [NC,OR]
+RewriteCond %{QUERY_STRING} echo [NC,OR]
+RewriteCond %{QUERY_STRING} @set [NC,OR]
+RewriteCond %{QUERY_STRING} @ini [NC,OR]
+RewriteCond %{QUERY_STRING} dirname [NC,OR]
+RewriteCond %{QUERY_STRING} decode [NC]
+
+RewriteRule ^(.*)$ /index.php/ [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f    
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteRule ^member_credit_submitter\.html$ member_credit_submitter.php [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f  
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteRule ^credit_submitter\.html$ mod/member/new_creadit.php [L]
+
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^sitemap\.xml$ xmlsitemap.php [L]
+	
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^robots\.txt$ /txtrobots.php [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^OneSignalSDKWorker\.js$ content/js/OneSignalSDKWorker.js [L]
+
+#not found file 
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L,QSA]
+
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+AddOutputFilterByType DEFLATE application/x-font
+AddOutputFilterByType DEFLATE application/x-font-opentype
+AddOutputFilterByType DEFLATE application/x-font-otf
+AddOutputFilterByType DEFLATE application/x-font-truetype
+AddOutputFilterByType DEFLATE application/x-font-ttf
+AddOutputFilterByType DEFLATE application/x-javascript
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE font/opentype
+AddOutputFilterByType DEFLATE font/otf
+AddOutputFilterByType DEFLATE font/ttf
+AddOutputFilterByType DEFLATE image/svg+xml
+AddOutputFilterByType DEFLATE image/x-icon
+AddOutputFilterByType DEFLATE image/png
+AddOutputFilterByType DEFLATE image/jpeg
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/javascript
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/xml
+
+# Remove browser bugs (only needed for really old browsers)
+BrowserMatch ^Mozilla/4 gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+Header append Vary User-Agent
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Serve gzip compressed CSS files if they exist 
+  # and the client accepts gzip.
+  RewriteCond "%{HTTP:Accept-encoding}" "gzip"
+  RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+  RewriteRule "^(.*)\.css" "$1\.css\.gz" [QSA]
+  # Serve gzip compressed JS files if they exist 
+  # and the client accepts gzip.
+  RewriteCond "%{HTTP:Accept-encoding}" "gzip"
+  RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+  #RewriteRule "^(.*)\.js" "$1\.js\.gz" [QSA]
+  # Serve correct content types, and prevent mod_deflate double gzip.
+  RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-gzip:1]
+  RewriteRule "\.js\.gz$" "-" [T=text/javascript,E=no-gzip:1]
+  <FilesMatch "(\.js\.gz|\.css\.gz)$">
+    # Serve correct encoding type.
+    Header append Content-Encoding gzip
+    # Force proxies to cache gzipped & 
+    # non-gzipped css/js files separately.
+    Header append Vary Accept-Encoding
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpg "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/gif "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/pdf "access plus 1 month"
+  ExpiresByType text/x-javascript "access plus 1 month"
+  ExpiresByType application/x-shockwave-flash "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresDefault "access plus 3 days"
+</IfModule>
+
+

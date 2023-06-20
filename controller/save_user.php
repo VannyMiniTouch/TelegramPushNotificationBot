@@ -1,9 +1,10 @@
 <?php
+error_reporting(0);
 $json = file_get_contents('php://input');
 $data = json_decode($json);
+$data ?? exit();
 date_default_timezone_set('Asia/Bangkok');
 require_once("conn.php");
-
 $tid = $data->tid;
 $username = $data->username;
 $firstname = $data->firstname;

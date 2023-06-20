@@ -1,12 +1,15 @@
 <div class="HomePage">
     <div class="container">
         <div class="container-header mt-3">
-            <div class="welcome">
+            <div class="welcome ">
                 <h3>Welcome To BOT ADMIN</h3>
             </div>
         </div>
         <div class="container-body">
             <div class="tableList-Users-container">
+                <div class="d-flex flex-row justify-content-end mt-2 mb-3">
+                    <a class="btn btn-sm btn-outline-danger" href="logout.php">Sign Out</a>
+                </div>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
