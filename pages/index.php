@@ -154,6 +154,15 @@
             });
         }
 
+        function iziToastWarning(title = "Warning", smg = "") {
+            iziToast.warning({
+                title: title,
+                message: smg,
+                position: 'topRight'
+            });
+        }
+
+
         function iziToastError(title = "Error", smg = "Somethings went wrong") {
             iziToast.error({
                 title: title,
@@ -206,6 +215,7 @@
                 img.src = url;
             });
         }
+
         //on leave focus append url to Image src
         $("#sourceImg").blur(function() {
             if ($(this).val() == "") {
@@ -287,8 +297,10 @@
         //Send To All Users
         function SendAllUsers(Img, Smg) {
             let once = true;
+            let round = 0;
             let count_status = 0;
             let lengtharr = 0;
+            let sendFail = 0;
             axios.post("controller/get_all_users.php", {}).then(function(res) {
                 if (res.data) {
                     lengtharr = res.data.length;
@@ -297,6 +309,7 @@
                     res.data.reduce(
                         (promiseChain, currentTask) =>
                         promiseChain.then(() => delay(400)).then(() => {
+                            round += 1;
                             const Userid = currentTask.tid;
                             const Smg_EndCode = encodeURIComponent(Smg);
                             const SEND_TEXT = `https://api.telegram.org/bot${BOT_Token}/sendMessage?chat_id=${Userid}&photo=${Img}&text=${Smg_EndCode}`;
@@ -310,6 +323,8 @@
                                         //call alert success here
                                         if (count_status == lengtharr) {
                                             iziToastSuccess("Success", "Notification was sent")
+                                        } else if (lengtharr == round && sendFail) {
+                                            iziToastWarning("Warning!", `Message sent success ${round-sendFail}, Fail ${sendFail}`);
                                         }
                                         if (once) {
                                             $("#FormCreateMessage")[0].reset();
@@ -322,8 +337,12 @@
                                     }
                                 })
                                 .catch(function(error) {
+                                    sendFail += 1;
+                                    if (lengtharr == round && sendFail) {
+                                        iziToastWarning("Warning!", `Message sent success ${round-sendFail}, Fail ${sendFail}`);
+                                    }
                                     //call alert error
-                                    iziToastError();
+                                    // iziToastError();
                                     console.log(error);
                                 });
                         }),
